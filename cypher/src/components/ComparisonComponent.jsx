@@ -3,7 +3,7 @@ import React from 'react';
 const ComparisonComponent = ({ filePaths, onComparisonResult }) => {
     const handleCompareClick = () => {
         console.log(filePaths);
-        fetch('https://compiler-render.onrender.com/compare-files', {
+        fetch('http://localhost:3002/compare-files', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
