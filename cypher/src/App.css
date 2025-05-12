@@ -43,11 +43,11 @@
 
 .sidebar {
   width: 20%;
-  min-width: 15%;
+  min-width: max-content;
   max-width: 50%;
   background-color: #252526;
   border-right: 1px solid #333;
-  overflow: auto; 
+  overflow-x: hidden;
   resize: horizontal;
   flex-shrink: 0;
 }
