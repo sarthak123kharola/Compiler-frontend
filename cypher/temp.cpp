@@ -7,6 +7,30 @@ int main(int argc, char* argv[]) {
         cout<< "two pointers"<< endl;
         cout<< "graphs" <<endl;
     }
+    for(int i=0; i<10e8; i++){
+
+    }
+    for(int i=0; i<10e8; i++){
+
+    }
+        for(int i=0; i<10e8; i++){
+
+    }
+    for(int i=0; i<10e8; i++){
+        
+    }
+        for(int i=0; i<10e8; i++){
+
+    }
+    for(int i=0; i<10e8; i++){
+
+    }
+        for(int i=0; i<10e8; i++){
+
+    }
+    for(int i=0; i<10e8; i++){
+        
+    }
     cout<<"wow";
     return 0;
 }
