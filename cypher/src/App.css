@@ -32,6 +32,9 @@
   }
 }
 
+div.file-item.selected{
+  color: orange;
+}
 
 .app-container { 
   display: flex;

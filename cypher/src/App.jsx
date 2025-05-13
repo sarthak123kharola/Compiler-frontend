@@ -9,7 +9,9 @@ function App() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
-  const [comparisonResult, setComparisonResult] = useState(''); 
+  const [comparisonResult, setComparisonResult] = useState('');
+  const [comparisonResults, setComparisonResults] = useState([]);
+  const [selectedComparison, setSelectedComparison] = useState(null);
 
   const fileInputRef = useRef(null);
 
@@ -34,7 +36,11 @@ function App() {
     }
 
     setFiles(prevFiles => [...prevFiles, ...newFiles]);
-    if (newFiles.length > 0) setSelectedFile(newFiles[0]);
+    if (newFiles.length > 0) {
+      setSelectedFile(newFiles[0]);
+      setSelectedComparison(null);
+      setComparisonResult('');
+    }
   };
 
   const handleFileDelete = (fileToDelete) => {
@@ -42,6 +48,8 @@ function App() {
       const updatedFiles = prevFiles.filter(file => file !== fileToDelete);
       if (selectedFile === fileToDelete) {
         setSelectedFile(updatedFiles.length > 0 ? updatedFiles[0] : null);
+        setComparisonResult('');
+        setSelectedComparison(null);
       }
       return updatedFiles;
     });
@@ -49,12 +57,13 @@ function App() {
 
   const handleFileSelect = (file) => {
     setSelectedFile(file);
-    setComparisonResult(''); 
+    setComparisonResult('');
+    setSelectedComparison(null);
   };
 
   const runTerminalCommandPlaceholder = async (command) => {
     console.log(`Attempting to run terminal command: ${command}`);
-    return ''; 
+    return '';
   };
 
   const handleSearch = async (query) => {
@@ -65,13 +74,21 @@ function App() {
     }
 
     const command = `echo "${selectedFile.content}" | grep "${searchQuery}"`;
-
     const simulatedTerminalOutput = await runTerminalCommandPlaceholder(command);
-
     const lines = simulatedTerminalOutput ? simulatedTerminalOutput.split('\n') : [];
-
     const parsedResults = lines.map(line => line).filter(line => line.length > 0);
     setSearchResults(parsedResults);
+  };
+
+  const handleComparisonResult = (result) => {
+    const newEntry = {
+      name: `comparison-${comparisonResults.length + 1}`,
+      content: result
+    };
+    setComparisonResults(prev => [...prev, newEntry]);
+    setSelectedComparison(newEntry);
+    setComparisonResult(result);
+    setSelectedFile(null);
   };
 
   return (
@@ -82,10 +99,12 @@ function App() {
           onFileSelect={handleFileSelect}
           onFileDelete={handleFileDelete}
         />
+
         <ComparisonComponent
           filePaths={files.map(file => file.name)}
-          onComparisonResult={setComparisonResult}
+          onComparisonResult={handleComparisonResult}
         />
+
         <div className="file-input-area">
           <input
             type="file"
@@ -96,13 +115,35 @@ function App() {
           />
           <button onClick={handleButtonClick} className="button">Load Files</button>
         </div>
+
+        <div className="comparison-results">
+          <h4>Comparisons</h4>
+          {comparisonResults.map((result, index) => (
+            <div
+              key={index}
+              className={`file-item ${selectedComparison === result ? 'selected' : ''}`}
+              onClick={() => {
+                setSelectedComparison(result);
+                setComparisonResult(result.content);
+                setSelectedFile(null);
+              }}
+              style={{
+                cursor: 'pointer',
+                padding: '4px 8px',
+                backgroundColor: selectedComparison === result ? '#ddd' : 'transparent'
+              }}
+            >
+              {result.name}
+            </div>
+          ))}
+        </div>
       </div>
 
       <div className="main-content">
-          <CodeEditor
-            content={comparisonResult || (selectedFile ? selectedFile.content : '')}
-            searchResults={searchResults}
-          />
+        <CodeEditor
+          content={comparisonResult || (selectedFile ? selectedFile.content : '')}
+          searchResults={searchResults}
+        />
       </div>
     </div>
   );
